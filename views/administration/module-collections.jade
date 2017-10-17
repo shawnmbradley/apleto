@@ -1,0 +1,135 @@
+form#new-collection-form(name="new-collection", method="post", module_name=module.system_name, item_id=module._id, prefix=instance_settings[0].setting)
+  .modal.fade#new-collection
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button", data-dismiss="modal", aria-lable="Close")
+            span(aria-hidden="true") &times;
+          h4.modal-title Create Collection
+        .modal-body
+          .form-group
+            label(for="name") Name
+            input.form-control#collection_name(type="text", name="name")
+          .form-group
+            label(for="system_name") System Name
+            input.form-control#collection_system_name(type="text", name="system_name", readonly)
+          .form-group
+            label(for="description") Description
+            textarea.textarea(placeholder='Place some text here', style='width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;')       
+        .modal-footer
+          button.btn.btn-danger.pull-left(data-dismiss="modal") Cancel
+          button.btn.btn-primary(type="submit") Save Changes
+
+//collection fields modal
+
+.modal.fade#collection-fields
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        button.close(type="button", data-dismiss="modal", aria-lable="Close")
+          span(aria-hidden="true") &times;
+        h4.modal-title Collection Fields
+      .modal-body
+        .form-group
+          label(for="name") Name
+          input.form-control#name(type="text", name="name")
+        .form-group
+          label(for="system_name") System Name
+          input.form-control#system_name(type="text", name="system_name")
+        .form-group
+          label(for="description") Description
+          textarea.textarea(placeholder='Place some text here', style='width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;')       
+      .modal-footer
+        button.btn.btn-default(data-dismiss="modal") Close
+
+
+table.table.table.condensed
+  tr
+    th Collection
+    th Options
+
+  each c, i in module.collections
+    tr
+      td=c.name
+      td
+        a(href="/administration/module/collection/fields/#{module._id}/#{c._id}") asdf
+        span(data-toggle="modal", data-target="#collection-fields", href="/administration/module/collection/fields/#{module._id}/#{c._id}")
+          button.btn.btn-default.ap-collection-fields(data-toggle="tooltip", data-placement="top", title="Collection Fields")
+            i.fa.fa-list-alt
+        button.btn.btn-default.ap-collection-delete(data-toggle="tooltip", data-placement="top", title="Delete Collection")
+          i.fa.fa-trash            
+  script.
+    var request;
+
+
+    $('#collection_name').keyup( function() {
+      var val = $(this).val().toLowerCase();
+      var prefix = $("#new-collection-form").attr("prefix");
+      var module = $("#new-collection-form").attr("module_name");
+      val = val.split(' ').join('.');
+      val = module + '.' + val
+      $("#collection_system_name").val(val);
+    });
+
+
+    $("#new-collection-form").submit( function(e) {
+      e.preventDefault();
+      var id = $(this).attr("item_id");
+      var url = '/administration/module/collection/create/' + id;
+
+      // Abort any pending request
+      if (request) {
+          request.abort();
+      }
+      // setup some local variables
+      var $form = $(this);
+
+      // Let's select and cache all the fields
+      var $inputs = $form.find("input, select, button, textarea");
+
+      // Serialize the data in the form
+      var serializedData = $form.serialize();
+
+      // Let's disable the inputs for the duration of the Ajax request.
+      // Note: we disable elements AFTER the form data has been serialized.
+      // Disabled form elements will not be serialized.
+      $inputs.prop("disabled", true);
+
+      // Fire off the request to /form.php
+      request = $.ajax({
+          url: url,
+          type: "post",
+         // dataType: "json",
+          data: serializedData
+      });
+
+      // Callback handler that will be called on success
+      request.done(function (response, textStatus, jqXHR){
+          // Log a message to the console
+          console.log(response);
+
+          if(response == 'success') {
+            $('.alert-success').show('slow');
+
+            //$('.modal.fade').modal('hide');
+          }
+
+      });
+
+      // Callback handler that will be called on failure
+      request.fail(function (jqXHR, textStatus, errorThrown){
+          // Log the error to the console
+          console.error(
+              "The following error occurred: "+
+              textStatus, errorThrown
+          );
+      });
+
+      // Callback handler that will be called regardless
+      // if the request failed or succeeded
+      request.always(function () {
+          // Reenable the inputs
+          $inputs.prop("disabled", false);
+      });
+
+    });         

@@ -1,0 +1,56 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    title A P L E T O | Log in
+    // Tell the browser to be responsive to screen width
+    meta(content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no', name='viewport')
+    link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
+    link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
+    link(rel='stylesheet', type='text/css', href='/admin-lte/dist/css/AdminLTE.css')
+    link(rel='stylesheet', type='text/css', href='/admin-lte/dist/css/skins/skin-blue.css')
+    script(src='https://code.jquery.com/jquery-3.1.1.min.js', integrity='sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=', crossorigin='anonymous')
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", crossorigin="anonymous")
+    
+    script(src='/socket.io/socket.io.js')
+    script(src='/admin-lte/dist/js/adminlte.min.js')
+    // Google Font
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic')
+  body.hold-transition.login-page
+    .login-box
+      .login-logo
+        a(href='/')
+          | A P L E T O
+      // /.login-logo
+      .login-box-body
+        p.login-box-msg Sign in to start your session
+        form(action='/auth/login', method='post')
+          .form-group.has-feedback
+            input.form-control(type='email', name="username", placeholder='Email')
+            span.glyphicon.glyphicon-envelope.form-control-feedback
+          .form-group.has-feedback
+            input.form-control(type='password', name="password", placeholder='Password')
+            span.glyphicon.glyphicon-lock.form-control-feedback
+          .row
+            .col-xs-12
+              button.btn.btn-primary.btn-block.btn-flat(type='submit') Sign In
+            // /.col
+        .social-auth-links.text-center
+          p - OR -
+          a.btn.btn-block.btn-social.btn-facebook.btn-flat(href='#')
+            i.fa.fa-facebook
+            |  Sign in using
+            |         Facebook
+          a.btn.btn-block.btn-social.btn-google.btn-flat(href='#')
+            i.fa.fa-google-plus
+            |  Sign in using
+            |         Google+
+        // /.social-auth-links
+        a(href='#') I forgot my password
+        br
+        
+
+    script.
+
+

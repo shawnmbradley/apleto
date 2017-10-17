@@ -1,0 +1,51 @@
+ul.ap-sidebar-menu.sidebar-menu(data-widget='tree')
+  li.header(tags="administration, users, groups, roles, instace, settings") MODULE MANAGEMENT
+  li.ap-menu.ap-sb-admin-users(tags="users, user")
+    a(href='/administration/modules')
+      span Modules
+  li.ap-menu.ap-sb-admin-groups(tags="groups")
+    a(href='/administration/groups')
+      span Collections
+  li.ap-menu.ap-sb-admin-roles(tags="roles")
+    a(href='/administration/roles')
+      span Fields       
+  li.ap-menu.ap-sb-admin-roles(tags="roles")
+    a(href='/administration/roles')
+      span Relationships           
+  // Optionally, you can add icons to the links
+  li.header(tags="administration, users, groups, roles, instace, settings") ADMINISTRATION
+  // Optionally, you can add icons to the links
+  li.ap-menu.ap-sb-admin-users(tags="instance settings, user")
+    a(href='/administration/instance_settings')
+      span Instance Settings  
+  li.ap-menu.ap-sb-admin-users(tags="users, user")
+    a(href='/administration/users')
+      span Users
+  li.ap-menu.ap-sb-admin-groups(tags="groups")
+    a(href='/administration/groups')
+      span Groups
+  li.ap-menu.ap-sb-admin-roles(tags="roles")
+    a(href='/administration/roles')
+      span Roles         
+         
+  li(tags="test")
+    a(href='#')
+      i.fa.fa-link
+      span Another Link
+
+script.
+  $(document).ready(
+    function(){
+      $('.ap-menu-search').keyup( function() {
+        var q = $(this).val().toLowerCase();
+        if(q.length >= 3) {
+          $('.ap-sidebar-menu>li.ap-menu').each( function() {
+            var text = $(this).attr('tags').toLowerCase();
+            (text.indexOf(q) == 0) ? $(this).show() : $(this).hide();
+          });
+        } else {
+          $('.ap-menu').show();
+        }
+      });
+    }
+  );

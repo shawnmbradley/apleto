@@ -1,0 +1,180 @@
+link(href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css', rel='stylesheet')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js')
+link(rel='stylesheet', type='text/css', href='/admin-lte/dist/css/AdminLTE.css')
+link(rel='stylesheet', type='text/css', href='/admin-lte/dist/css/skins/skin-blue.css')  
+
+.modal-dialog.modal-lg
+  .modal-content.ap-colf-details(collection_id=col._id, module_id=module._id, collection=col.system_name, mods=modules)
+    .modal-header
+      button.close(type="button", data-dismiss="modal", aria-lable="Close")
+        span(aria-hidden="true") &times;
+      h4.modal-title Collection Fields
+      br
+      br
+      .input-group-btn
+        button.btn.btn-default.dropdown-toggle.pull-left(type='button', data-toggle='dropdown')
+          | Add Field  
+          span.fa.fa-caret-down
+        ul.dropdown-menu
+          each ft, i in types
+            li
+              a(id=ft.system_name, href="#", type_id=ft._id)= ft.name
+
+    .modal-body
+      span.ap-collection-field-forms
+        each f, i in fields
+          
+          form(id=f._id, method="post")
+            .row.ap-collection-field
+              .col-xs-6
+                label Name
+                input(type="text", onkeyup="updateSystemName(name#{f._id})", class="form-control", value=f.name, id="name#{f._id}")
+              .col-xs-6
+                label System Name
+                input(type="text", class="form-control", value=f.system_name, class="ap-col-field-system_name#{f._id}")
+                input(type="hidden", class="form-control", value=f._type)  
+                input(type="hidden", class="form-control", value=f._collection)
+
+                br
+            .row
+              .col-xs-12
+                button.btn.btn-primary.pull-right(type="submit")
+                  i.fa.fa-save
+            br
+            br
+
+            hr                              
+     
+    .modal-footer
+      p.pull-left IMPORTANT: Make sure you save each field that you add or change.
+      form#new-field
+    script.
+      var collection = $(".ap-colf-details").attr("collection");
+      var collection_id = $(".ap-colf-details").attr("collection_id");
+      var module_id = $(".ap-colf-details").attr("module_id");
+      console.log("Collection: " + collection_id);
+      console.log("Module: " + module_id);
+      var count = 0;
+
+
+
+      $("#lookup").click(function(e) {
+        var type_id = $(this).attr('type_id');
+        console.log(type_id);
+        e.preventDefault();
+        console.log('new single line text field');
+        $(".ap-collection-field-forms").append(
+          '<form id="'+count+'" method="post" action="/administration/modules/collection/fields/create/lookup/'+collection_id+'">' +
+            '<div class="row ap-collection-field">' +
+              '<div class="col-xs-2">' +
+                '<label>Name</label>' +
+                '<input type="text" name="name" onkeyup="updateSystemName(name'+count+')" class="form-control ap-col-field-name" id="name'+count+'" />' +
+              '</div>' +
+              '<div class="col-xs-2">' +
+                '<label>System Name</label>' +
+                '<input type="text" name="system_name" class="form-control ap-col-field-system_name'+count+'" />' +
+              '</div>' +    
+              '<div class="col-xs-2">' +
+                '<label>_type</label>' +
+                '<input type="text" name="_type" value="' + type_id + '" class="form-control ap-col-field" hidden/>' +
+              '</div>' +  
+              '<div class="col-xs-2">' +
+                '<label>_collection</label>' +
+                '<input type="text" name="_collection", value="' + collection_id + '" class="form-control ap-col-field" hidden/>' +
+              '</div>' +             
+              '<div class="col-xs-2">' +
+                '<label>Lookup Collection</label>' +
+                '<select class="form-control collection-lookup" onclick="collectionLookupOptions(lookup'+count+')" id="lookup'+count+'" name="_collection"><option>--- select one ---</option></select>' +
+              '</div>' +             
+              '<div class="col-xs-2"><button type="submit" onclick="javascript:fieldSubmit('+count+')" class="btn btn-danger"><i class="fa fa-save"></i></button></div>' +
+            '</div>' +            
+          '</form>'
+
+          
+        );
+
+        $.getJSON("/api/collections", function(data){
+            for (var i = 0, len = data.length; i < len; i++) {
+              console.log(data[i]._id);
+              $('#lookup'+count).append($('<option>', {
+                  value: data[i]._id,
+                  text: data[i].name
+              }));
+
+            }
+        });          
+
+        count ++;
+
+        
+      });
+
+      $("#single_line_text").click(function(e) {
+        var type_id = $(this).attr('type_id');
+        console.log(type_id);
+        e.preventDefault();
+        console.log('new single line text field');
+        $(".ap-collection-field-forms").append(
+          '<form id="'+count+'" method="post" action="/administration/modules/collection/fields/create/'+collection_id+'">' +
+            '<div class="row ap-collection-field">' +
+              '<div class="col-xs-2">' +
+                '<label>Name</label>' +
+                '<input type="text" name="name" onkeyup="updateSystemName(name'+count+')" class="form-control ap-col-field-name" id="name'+count+'" />' +
+              '</div>' +
+              '<div class="col-xs-2">' +
+                '<label>System Name</label>' +
+                '<input type="text" name="system_name" class="form-control ap-col-field-system_name'+count+'" />' +
+              '</div>' +    
+              '<div class="col-xs-2">' +
+                '<label>_type</label>' +
+                '<input type="text" name="_type" value="' + type_id + '" class="form-control ap-col-field" hidden/>' +
+              '</div>' +  
+              '<div class="col-xs-2">' +
+                '<label>_collection</label>' +
+                '<input type="text" name="_collection", value="' + collection_id + '" class="form-control ap-col-field" hidden/>' +
+              '</div>' +             
+              '<div class="col-xs-2"><button type="submit" onclick="javascript:fieldSubmit('+count+')" class="btn btn-danger"><i class="fa fa-save"></i></button></div>' +
+            '</div>' +
+          '</form>'
+
+          
+        );
+        count ++;
+      });
+
+
+      function collectionLookupOptions(item) {
+        var id = $(item).attr('id');
+        console.log(id);
+        $.getJSON("/api/collections", function(data){
+            for (var i = 0, len = data.length; i < len; i++) {
+              console.log(data[i]._id);
+              $('#'+id).append($('<option>', {
+                  value: data[i]._id,
+                  text: data[i].name
+              }));
+
+            }
+        });        
+      }      
+
+      
+
+      function updateSystemName(item) {
+        console.log('item: ' + item);
+        var id = $(item).attr('id');
+        console.log('ID: ' +id);
+        var system_name = $('.ap-col-field-system_'+id);
+        console.log('SYS: '+system_name);
+        var value = $("#"+id).val().toLowerCase();
+        console.log(value);
+        console.log('-------------------------------------');
+        value = value.split(' ').join('.');
+        value = collection + '.' + value;
+        $(system_name).val(value);
+      }
+
+      function fieldSubmit(count) {
+        $("#" + count).submit();
+      }
+

@@ -1,0 +1,202 @@
+doctype html
+html
+  head
+    title= title
+    link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet", integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", crossorigin="anonymous")
+    link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
+    link(href="/stylesheets/dataTables.bootstrap.min.css")
+
+    link(rel="stylesheet", type="text/css", href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css")
+    link(rel='stylesheet', type='text/css', href='/admin-lte/dist/css/AdminLTE.css')
+    link(rel='stylesheet', type='text/css', href='/admin-lte/dist/css/skins/skin-blue.css')    
+    
+       
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", crossorigin="anonymous")
+    //script(src='https://code.jquery.com/jquery-3.1.1.min.js', integrity='sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=', crossorigin='anonymous')
+    script(src='/socket.io/socket.io.js')
+    script(src='/admin-lte/dist/js/adminlte.min.js')
+    script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
+    script(src="/javascripts/dataTables.bootstrap.min.js")
+    script(src="/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.js") 
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body.hold-transition.skin-blue.sidebar-mini
+    .wrapper
+      // Main Header
+      header.main-header
+        // Logo
+        a.logo(href='index2.html')
+          // mini logo for sidebar mini 50x50 pixels
+          span.logo-mini
+            | A P
+          // logo for regular state and mobile devices
+          span.logo-lg
+            | A P L E T O
+        // Header Navbar
+        nav.navbar.navbar-static-top(role='navigation')
+          // Sidebar toggle button
+          a.sidebar-toggle(href='#', data-toggle='push-menu', role='button')
+            span.sr-only Toggle navigation
+          // Navbar Right Menu
+          .navbar-custom-menu
+            ul.nav.navbar-nav
+              // Messages: style can be found in dropdown.less
+              li.dropdown.messages-menu
+                // Menu toggle button
+                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                  i.fa.fa-envelope-o
+                  span.label.label-success 4
+                ul.dropdown-menu
+                  li.header You have 4 messages
+                  li
+                    // inner menu: contains the messages
+                    ul.menu
+                      li
+                        // start message
+                        a(href='#')
+                          .pull-left
+                            // User Image
+                            img.img-circle(src='/images/no-image-avatar.png', alt='User Image')
+                          // Message title and timestamp
+                          h4
+                            | Support Team
+                            small
+                              i.fa.fa-clock-o
+                              |  5 mins
+                          // The message
+                          p Why not buy a new awesome theme?
+                      // end message
+                    // /.menu
+                  li.footer
+                    a(href='#') See All Messages
+              // /.messages-menu
+              // Notifications Menu
+              li.dropdown.notifications-menu
+                // Menu toggle button
+                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                  i.fa.fa-bell-o
+                  span.label.label-warning 10
+                ul.dropdown-menu
+                  li.header You have 10 notifications
+                  li
+                    // Inner Menu: contains the notifications
+                    ul.menu
+                      li
+                        // start notification
+                        a(href='#')
+                          i.fa.fa-users.text-aqua
+                          |  5 new members joined today
+                      // end notification
+                  li.footer
+                    a(href='#') View all
+              // Tasks Menu
+              li.dropdown.tasks-menu
+                // Menu Toggle Button
+                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                  i.fa.fa-flag-o
+                  span.label.label-danger 9
+                ul.dropdown-menu
+                  li.header You have 9 tasks
+                  li
+                    // Inner menu: contains the tasks
+                    ul.menu
+                      li
+                        // Task item
+                        a(href='#')
+                          // Task title and progress text
+                          h3
+                            | Design some buttons
+                            small.pull-right 20%
+                          // The progress bar
+                          .progress.xs
+                            // Change the css width attribute to simulate progress
+                            .progress-bar.progress-bar-aqua(style='width: 20%', role='progressbar', aria-valuenow='20', aria-valuemin='0', aria-valuemax='100')
+                              span.sr-only 20% Complete
+                      // end task item
+                  li.footer
+                    a(href='#') View all tasks
+              // User Account Menu
+              li.dropdown.user.user-menu
+                // Menu Toggle Button
+                a.dropdown-toggle(href='#', data-toggle='dropdown')
+                  // The user image in the navbar
+                  img.user-image(src='/images/no-image-avatar.png', alt='User Image')
+                  // hidden-xs hides the username on small devices so only the image appears.
+                  span.hidden-xs #{user.firstname} #{user.lastname}
+                ul.dropdown-menu
+                  // The user image in the menu
+                  li.user-header
+                    img.img-circle(src='/images/no-image-avatar.png', alt='User Image')
+                    p #{user.firstname} #{user.lastname}
+                      small=user.jobtitle
+                  // Menu Body
+                  li.user-body
+                    .row
+                      .col-xs-4.text-center
+                        a(href='#') Followers
+                      .col-xs-4.text-center
+                        a(href='#') Sales
+                      .col-xs-4.text-center
+                        a(href='#') Friends
+                    // /.row
+                  // Menu Footer
+                  li.user-footer
+                    .pull-left
+                      a.btn.btn-default.btn-flat(href='/profile') Profile
+                    .pull-right
+                      a.btn.btn-default.btn-flat(href='/auth/logout') Sign out
+      // Left side column. contains the logo and sidebar
+      aside.main-sidebar
+        // sidebar: style can be found in sidebar.less
+        section.sidebar
+          // Sidebar user panel (optional)
+          .user-panel
+            .pull-left.image
+              img.img-circle(src='/images/no-image-avatar.png', alt='User Image')
+            .pull-left.info
+              if(user.firstname)
+                p #{user.firstname} #{user.lastname}
+              else
+                p=user.username
+              // Status
+              a(href='#')
+                i.fa.fa-circle.text-success
+                |  Online
+          // search form (Optional)
+          form.sidebar-form(action='#', method='get')
+            .input-group
+              input.form-control.ap-menu-search(type='text', name='q', placeholder='Search...')
+              span.input-group-btn
+                button#search-btn.btn.btn-flat(type='submit', name='search')
+                  i.fa.fa-search
+          // /.search form
+          // Sidebar Menu
+          include sidebar
+          // /.sidebar-menu
+        // /.sidebar
+      // Content Wrapper. Contains page content
+      .content-wrapper
+        block content
+
+
+
+      // Main Footer
+      footer.main-footer
+        // To the right
+        .pull-right.hidden-xs
+          | version 0.1.0
+        // Default to the left
+        strong
+          | Copyright © 2017 
+          a(href='https://www.apleto.com') APLETO
+          | .
+        |  All rights reserved.
+
+    script.
+      $('input').attr('autocomplete','off');
+      var socket = io.connect('http://localhost:3000');
+      socket.on('client_test', function (data) {
+        console.log(data);
+        socket.emit('my other event', { my: 'data' });
+      });
+      

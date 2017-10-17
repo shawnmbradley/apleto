@@ -1,0 +1,167 @@
+extends ../layout
+
+block content
+
+  .alert.alert-success.alert-dismissible
+    button.close(type='button', data-dismiss='alert', aria-hidden='true') ×
+    h4
+      i.icon.fa.fa-check
+      |  Success!
+    span The module was saved!
+
+
+  form#new-module-form(name="new-module", method="post" prefix=instance_settings[0].setting)
+    .modal.fade#new-module
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type="button", data-dismiss="modal", aria-lable="Close")
+              span(aria-hidden="true") &times;
+            h4.modal-title Create Module
+          .modal-body
+            .form-group
+              label(for="name") Name
+              input.form-control#module_name(type="text", name="name")
+            .form-group
+              label(for="system_name") System Name
+              input.form-control#module_system_name(type="text", name="system_name", readonly)
+            .form-group
+              label(for="_state") State 
+              select.select2(name="_state", id="_state")
+                each s, i in states
+                  option(value=s._id)= s.state              
+            .form-group
+              label(for="description") Description
+              textarea(style='width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;')       
+          .modal-footer
+            button.btn.btn-danger.pull-left(data-dismiss="modal") Cancel
+            button.btn.btn-primary(type="submit") Save Changes
+  section.content-header
+    .row
+    .col-xs-12
+      ol.breadcrumb
+        li
+          a(href='#')
+            i.fa.fa-dashboard
+            |  Administration
+        li.active Modules
+
+    // Main content
+    section.content.container-fluid
+      .row
+        .col-xs-4
+
+                  
+          .box.box-solid
+            .box-header.with-border
+              h3.box-title
+                button.btn.btn-success.ap-create-module(data-toggle="modal", data-target="#new-module")
+                  i.fa.fa-plus
+            .box-body
+              input.form-control.col-xs-8#module-filter(type="text", placeholder="filter...")
+            span.ap-item-list  
+              each m, i in modules
+                  .box-body.ap-item(id=m._id)
+                    .ap-item-body
+                      p.ap-item-title=m.name
+
+        .col-xs-8
+
+
+
+          .box.box-solid.ap-details
+
+
+          .info-box.ap-info-box
+            span.info-box-icon.bg-aqua
+              i.fa.fa-info
+            .info-box-content
+              p Modules are used to help organize your data.
+              p Select a module from the list to open view the details.
+
+  script.
+    var request;
+
+    $('.alert').hide();
+
+
+    $('.ap-item').click(function() {
+      var url = "/administration/module/" + $(this).attr("id");
+      console.log("item_id: " + $(this).attr("id"));
+      $('.ap-details').empty().load(url);
+      $('.ap-info-box').hide();
+    })
+
+    $('#module_name').keyup( function() {
+      var val = $(this).val().toLowerCase();
+      var prefix = $("#new-module-form").attr("prefix");
+      val = val.split(' ').join('.');
+      val = prefix + '.' + val
+      $("#module_system_name").val(val);
+    });
+
+    $("#new-module-form").submit( function(e) {
+      e.preventDefault();
+
+      var url = '/administration/modules/create';
+
+      // Abort any pending request
+      if (request) {
+          request.abort();
+      }
+      // setup some local variables
+      var $form = $(this);
+
+      // Let's select and cache all the fields
+      var $inputs = $form.find("input, select, button, textarea");
+
+      // Serialize the data in the form
+      var serializedData = $form.serialize();
+
+      // Let's disable the inputs for the duration of the Ajax request.
+      // Note: we disable elements AFTER the form data has been serialized.
+      // Disabled form elements will not be serialized.
+      $inputs.prop("disabled", true);
+
+      // Fire off the request to /form.php
+      request = $.ajax({
+          url: url,
+          type: "post",
+         // dataType: "json",
+          data: serializedData
+      });
+
+      // Callback handler that will be called on success
+      request.done(function (response, textStatus, jqXHR){
+          // Log a message to the console
+          console.log(response);
+
+          if(response == 'success') {
+            $('.alert-success').show('slow').delay(1500).hide('slow');
+
+            $('.modal.fade').modal('hide');
+
+            $('.ap-item-list').empty().load('/administration/module-list')
+          }
+
+      });
+
+      // Callback handler that will be called on failure
+      request.fail(function (jqXHR, textStatus, errorThrown){
+          // Log the error to the console
+          console.error(
+              "The following error occurred: "+
+              textStatus, errorThrown
+          );
+      });
+
+      // Callback handler that will be called regardless
+      // if the request failed or succeeded
+      request.always(function () {
+          // Reenable the inputs
+          $inputs.prop("disabled", false);
+      });
+
+    }); 
+    
+

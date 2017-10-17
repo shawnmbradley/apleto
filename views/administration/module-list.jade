@@ -1,0 +1,89 @@
+each m, i in modules
+    .box-body.ap-item(id=m._id)
+      .ap-item-body
+        p.ap-item-title=m.name
+
+  script.
+    var request;
+
+    $('.alert').hide();
+
+
+    $('.ap-item').click(function() {
+      var url = "/administration/module/" + $(this).attr("id");
+      console.log("item_id: " + $(this).attr("id"));
+      $('.ap-details').empty().load(url);
+      $('.ap-info-box').hide();
+    })
+
+    $('#module_name').keyup( function() {
+      var val = $(this).val().toLowerCase();
+      var prefix = $("#new-module-form").attr("prefix");
+      val = val.split(' ').join('.');
+      val = prefix + '.' + val
+      $("#module_system_name").val(val);
+    });
+
+    $("#new-module-form").submit( function(e) {
+      e.preventDefault();
+
+      var url = '/administration/modules/create';
+
+      // Abort any pending request
+      if (request) {
+          request.abort();
+      }
+      // setup some local variables
+      var $form = $(this);
+
+      // Let's select and cache all the fields
+      var $inputs = $form.find("input, select, button, textarea");
+
+      // Serialize the data in the form
+      var serializedData = $form.serialize();
+
+      // Let's disable the inputs for the duration of the Ajax request.
+      // Note: we disable elements AFTER the form data has been serialized.
+      // Disabled form elements will not be serialized.
+      $inputs.prop("disabled", true);
+
+      // Fire off the request to /form.php
+      request = $.ajax({
+          url: url,
+          type: "post",
+         // dataType: "json",
+          data: serializedData
+      });
+
+      // Callback handler that will be called on success
+      request.done(function (response, textStatus, jqXHR){
+          // Log a message to the console
+          console.log(response);
+
+          if(response == 'success') {
+            $('.alert-success').show('slow').delay(1500).hide('slow');
+
+            $('.modal.fade').modal('hide');
+
+            $('.ap-item-list').empty().load('/administration/module-list')
+          }
+
+      });
+
+      // Callback handler that will be called on failure
+      request.fail(function (jqXHR, textStatus, errorThrown){
+          // Log the error to the console
+          console.error(
+              "The following error occurred: "+
+              textStatus, errorThrown
+          );
+      });
+
+      // Callback handler that will be called regardless
+      // if the request failed or succeeded
+      request.always(function () {
+          // Reenable the inputs
+          $inputs.prop("disabled", false);
+      });
+
+    });         

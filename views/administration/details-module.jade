@@ -1,0 +1,118 @@
+.box.box-solid
+  .box-header.with-border
+    | #{module.name}
+  .box-body.no-padding
+
+    .nav-tabs-custom   
+      ul.nav.nav-tabs
+        li.active
+          a(href="#details_tab", data-toggle="tab") Details
+        li
+          a(href="#collections_tab", data-toggle="tab") Collections
+        li
+          a(href="#permissions_tab", data-toggle="tab") Permissions
+
+      div.tab-content
+        .tab-pane.active(id="details_tab")
+          form#module-details-form(method="post", action="/administration/module/update/#{module._id}", item_id=module._id)
+            .form-group
+              label(for="name") Name
+              input.form-control#name(type="text", name="name", value=module.name)
+            .form-group
+              label(for="system_name") System Name
+              input.form-control#system_name(type="text", name="system_name", value=module.system_name, disabled)
+            .form-group
+              label(for="_state")
+              p=module
+              select.select2(name="_state", id="_state")
+                option(value=module._state._id)= module._state.state
+                each s, i in states
+                  option(value=s._id)= s.state
+            .form-group
+              label(for="description") Description
+              textarea.textarea(name="description", style='width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;')=module.description
+            .form-group
+              button.btn.btn-primary(type="submit") Save Changes           
+        .tab-pane(id="collections_tab")
+          button.btn.btn-success.ap-create-collection(data-toggle="modal", data-target="#new-collection")
+            i.fa.fa-plus
+          br
+          br
+          span#collections_body
+        .tab-pane(id="permissions_tab")
+          p permissions_tab
+
+  script.
+    var request;
+    var id = $("#module-details-form").attr("item_id");
+
+    //load collections tab
+    function load_collections(id) {
+      console.log(id);
+      var url = "/administration/module/collections/" + id;
+      $("#collections_body").empty().load(url);
+    }
+
+    load_collections(id);
+
+    $("#module-details-form").submit( function(e) {
+      e.preventDefault();
+      var id = $(this).attr("item_id");
+      var url = '/administration/modules/update/' + id;
+
+      // Abort any pending request
+      if (request) {
+          request.abort();
+      }
+      // setup some local variables
+      var $form = $(this);
+
+      // Let's select and cache all the fields
+      var $inputs = $form.find("input, select, button, textarea");
+
+      // Serialize the data in the form
+      var serializedData = $form.serialize();
+
+      // Let's disable the inputs for the duration of the Ajax request.
+      // Note: we disable elements AFTER the form data has been serialized.
+      // Disabled form elements will not be serialized.
+      $inputs.prop("disabled", true);
+
+      // Fire off the request to /form.php
+      request = $.ajax({
+          url: url,
+          type: "post",
+         // dataType: "json",
+          data: serializedData
+      });
+
+      // Callback handler that will be called on success
+      request.done(function (response, textStatus, jqXHR){
+          // Log a message to the console
+          console.log(response);
+
+          if(response == 'success') {
+            $('.alert-success').show('slow');
+
+            //$('.modal.fade').modal('hide');
+          }
+
+      });
+
+      // Callback handler that will be called on failure
+      request.fail(function (jqXHR, textStatus, errorThrown){
+          // Log the error to the console
+          console.error(
+              "The following error occurred: "+
+              textStatus, errorThrown
+          );
+      });
+
+      // Callback handler that will be called regardless
+      // if the request failed or succeeded
+      request.always(function () {
+          // Reenable the inputs
+          $inputs.prop("disabled", false);
+      });
+
+    });        

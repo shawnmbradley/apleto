@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  section.content-header
+    h1
+      | Page Header
+      small Optional description
+    ol.breadcrumb
+      li
+        a(href='#')
+          i.fa.fa-dashboard
+          |  Level
+      li.active Here
+    // Main content
+    section.content.container-fluid
+    p=instance_settings
+

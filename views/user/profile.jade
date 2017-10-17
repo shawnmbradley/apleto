@@ -1,0 +1,41 @@
+extends ../layout
+
+block content
+  section.content-header
+    h1
+      | Your Profile
+      small=user
+    ol.breadcrumb
+      li
+        a(href='#')
+          i.fa.fa-user
+          |  User Settings
+      li.active Profile
+    // Main content
+    section.content.container-fluid
+      .row
+        col-md-6
+          .box.box-primary
+            .box-header.with-border
+              h3.box-title User Details
+                small  You will have to log out and back in to see the changes here...
+            form(role="form", method="post", action="/profile")
+              .box-body
+                .form-group
+                  label(for="firstname") First Name
+                  input.form-control(id="firstname", name="firstname", type="text", placeholder="First Name", value=user.firstname)
+                .form-group
+                  label(for="lastname") Last Name
+                  input.form-control(id="lastname", name="lastname", type="text", placeholder="Last Name", value=user.lastname)
+                .form-group
+                  label(for="email") Email
+                  input.form-control(id="email", name="email", type="email", placeholder="Email", value=user.email) 
+                .form-group
+                  label(for="username") User Name
+                  input.form-control(id="username", name="username", type="email", placeholder="Username", value=user.username, disabled="")                   
+                .form-group
+                  label(for="jobtitle") Job Title
+                  input.form-control(id="jobtitle", name="jobtitle", type="text", placeholder="Job Title", value=user.jobtitle)
+              .box-footer
+                button.btn.btn-app.btn-primary(type="submit")
+                  i.fa.fa-save                                                     
